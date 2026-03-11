@@ -6,6 +6,29 @@ const Phantom = {
   // ── State ──
   user: null,
   toastTimeout: null,
+  // Base path — change this if deploying to a subdirectory
+  basePath: (function() {
+    const base = document.querySelector('base');
+    if (base) return base.getAttribute('href').replace(/\/$/, '');
+    // Auto-detect from script src
+    const scripts = document.querySelectorAll('script[src*="app.js"]');
+    if (scripts.length) {
+      const src = scripts[0].getAttribute('src');
+      const idx = src.indexOf('js/app.js');
+      if (idx > 0) return src.substring(0, idx - 1);
+    }
+    return '';
+  })(),
+
+  url(path) {
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('/')) path = path.substring(1);
+    return this.basePath + '/' + path;
+  },
+
+  navigate(path) {
+    window.location.href = this.url(path);
+  },
 
   // ── Init ──
   init() {
@@ -29,7 +52,7 @@ const Phantom = {
   logout() {
     this.user = null;
     localStorage.removeItem('phantom_user');
-    window.location.href = '/';
+    this.navigate('index.html');
   },
 
   signup(name, email, password) {
@@ -107,10 +130,10 @@ const Phantom = {
   },
 
   protectRoutes() {
-    const protectedPages = ['/dashboard.html', '/settings.html'];
     const current = window.location.pathname;
-    if (protectedPages.some(p => current.endsWith(p)) && !this.user) {
-      window.location.href = '/login.html';
+    const isProtected = current.endsWith('dashboard.html') || current.endsWith('settings.html');
+    if (isProtected && !this.user) {
+      this.navigate('login.html');
     }
   },
 

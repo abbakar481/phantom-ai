@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="/phantom-ai/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up — Phantom</title>
@@ -10,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="css/global.css">
   <style>
     .auth-page {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
@@ -55,9 +54,9 @@
 <body>
 
   <nav class="site-nav">
-    <a href="/" class="site-logo">phantom <span>ai</span></a>
+    <a href="index.html" class="site-logo">phantom <span>ai</span></a>
     <div class="nav-links">
-      <a href="/login.html" class="btn btn-ghost btn-sm">Log In</a>
+      <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
     </div>
   </nav>
 
@@ -80,7 +79,7 @@
 
       <div class="divider-text">or</div>
 
-      <form class="auth-form" onsubmit="event.preventDefault(); if(Phantom.signup(this.name.value, this.email.value, this.password.value)) window.location.href='/dashboard.html';">
+      <form class="auth-form" onsubmit="event.preventDefault(); if(Phantom.signup(this.name.value, this.email.value, this.password.value)) Phantom.navigate('dashboard.html');">
         <div class="input-group">
           <label for="name">Full name</label>
           <input type="text" id="name" name="name" class="input" placeholder="Sarah Chen" required autocomplete="name">
@@ -102,11 +101,11 @@
         <button type="submit" class="btn btn-primary btn-full btn-lg">Create Account</button>
       </form>
 
-      <p class="auth-footer">Already have an account? <a href="/login.html">Log in</a></p>
+      <p class="auth-footer">Already have an account? <a href="login.html">Log in</a></p>
     </div>
   </div>
 
-  <script src="/js/app.js"></script>
+  <script src="js/app.js"></script>
   <script>
     function updateStrength(pw) {
       const bar = document.getElementById('str-bar');
