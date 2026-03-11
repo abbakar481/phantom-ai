@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Phantom Thinking System — A Mental Operating System</title>
+  <meta name="description" content="A practical framework for clearer, deeper, more powerful thinking. Five lenses, reasoning engines, imagination tools, and daily practices.">
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg-raised: #0f0f12;
+      --bg-card: #111113;
+      --border: #1e1e24;
+      --border-accent: rgba(168,85,247,0.25);
+      --text: #e4e4e7;
+      --text-bright: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent: #a855f7;
+      --accent2: #6366f1;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.75; font-size: 17px;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 14px 32px;
+      background: rgba(9,9,11,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 6px; }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      font-size: 0.8rem; font-weight: 500;
+      padding: 5px 10px; border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+
+    /* ── TOC SIDEBAR ── */
+    .layout { display: flex; max-width: 1300px; margin: 0 auto; }
+    .toc {
+      width: 240px; flex-shrink: 0;
+      position: fixed; top: 60px; bottom: 0; left: max(0px, calc((100vw - 1300px)/2));
+      padding: 32px 20px; overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+    .toc-title {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-dim); margin-bottom: 14px;
+    }
+    .toc a {
+      display: block; padding: 5px 10px; margin-bottom: 2px;
+      font-size: 0.82rem; color: var(--text-dim);
+      text-decoration: none; border-radius: 6px;
+      border-left: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .toc a:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .toc a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(168,85,247,0.06); }
+    .toc .toc-level { font-weight: 600; color: var(--text-muted); margin-top: 10px; }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      flex: 1; margin-left: 240px;
+      padding: 100px 60px 120px;
+      max-width: 780px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      margin-bottom: 80px; padding-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-emoji { font-size: 4rem; margin-bottom: 20px; display: block; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; font-weight: 700;
+      color: var(--text-bright); line-height: 1.15;
+      letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub { font-size: 1.15rem; color: var(--text-muted); max-width: 520px; }
+
+    /* ── SECTIONS ── */
+    .level {
+      margin-bottom: 72px; padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .level:last-child { border-bottom: none; }
+    .level-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 4px 12px; border-radius: 50px;
+      margin-bottom: 16px;
+    }
+    .level-badge.l1 { background: rgba(59,130,246,0.1); color: var(--blue); }
+    .level-badge.l2 { background: rgba(168,85,247,0.1); color: var(--accent); }
+    .level-badge.l3 { background: rgba(34,197,94,0.1); color: var(--green); }
+    .level-badge.l4 { background: rgba(249,115,22,0.1); color: var(--orange); }
+    .level-badge.l5 { background: rgba(234,179,8,0.1); color: var(--yellow); }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--text-bright); margin-bottom: 16px;
+      line-height: 1.2; letter-spacing: -0.5px;
+    }
+    h3 {
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--text-bright); margin: 40px 0 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    h3 .lens-icon { font-size: 1.4rem; }
+
+    p { margin-bottom: 16px; }
+
+    /* ── SPECIAL BLOCKS ── */
+    .quote-block {
+      padding: 20px 24px; margin: 24px 0;
+      background: var(--bg-raised);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      font-size: 1.05rem; font-style: italic;
+      color: var(--text-bright);
+    }
+
+    .insight-block {
+      padding: 20px 24px; margin: 24px 0;
+      background: rgba(168,85,247,0.05);
+      border: 1px solid var(--border-accent);
+      border-radius: 12px;
+    }
+    .insight-block .label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent); margin-bottom: 8px;
+    }
+
+    .practice-block {
+      padding: 20px 24px; margin: 24px 0;
+      background: rgba(34,197,94,0.04);
+      border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 12px;
+    }
+    .practice-block .label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--green); margin-bottom: 8px;
+    }
+
+    .warning-block {
+      padding: 20px 24px; margin: 24px 0;
+      background: rgba(239,68,68,0.04);
+      border: 1px solid rgba(239,68,68,0.15);
+      border-radius: 12px;
+    }
+    .warning-block .label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--red); margin-bottom: 8px;
+    }
+
+    .example-block {
+      padding: 20px 24px; margin: 24px 0;
+      background: rgba(59,130,246,0.04);
+      border: 1px solid rgba(59,130,246,0.15);
+      border-radius: 12px;
+    }
+    .example-block .label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--blue); margin-bottom: 8px;
+    }
+
+    /* Chain diagram */
+    .chain {
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    }
+    .chain-step {
+      padding: 8px 14px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+    }
+    .chain-arrow { color: var(--text-dim); font-size: 1.2rem; }
+
+    /* Scenario table */
+    .scenario-table {
+      width: 100%; border-collapse: collapse; margin: 24px 0;
+      font-size: 0.9rem;
+    }
+    .scenario-table th {
+      padding: 12px 16px; text-align: left;
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-dim);
+    }
+    .scenario-table td {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .scenario-table td:first-child { font-weight: 600; color: var(--text); }
+    .col-good { color: var(--green) !important; }
+    .col-mid { color: var(--yellow) !important; }
+    .col-bad { color: var(--red) !important; }
+
+    /* Lists */
+    ul, ol {
+      margin: 12px 0 16px 24px; color: var(--text-muted);
+    }
+    li { margin-bottom: 8px; }
+    li strong { color: var(--text); }
+
+    /* Numbered steps */
+    .step-list {
+      list-style: none; margin-left: 0; counter-reset: step;
+    }
+    .step-list li {
+      counter-increment: step; padding-left: 36px; position: relative;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute; left: 0; top: 2px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white; font-size: 0.75rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Master question */
+    .master-question {
+      text-align: center; padding: 48px 32px; margin: 48px 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(99,102,241,0.06));
+      border: 1px solid var(--border-accent);
+      border-radius: 20px;
+    }
+    .master-question .mq-label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent); margin-bottom: 16px;
+    }
+    .master-question blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-style: italic;
+      color: var(--text-bright); line-height: 1.4;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* Daily practice cards */
+    .daily-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin: 24px 0;
+    }
+    .daily-card {
+      padding: 20px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .daily-card.full { grid-column: 1 / -1; }
+    .daily-card .time {
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .daily-card .prompt {
+      font-style: italic; color: var(--text-muted);
+    }
+
+    /* Closing */
+    .closing {
+      text-align: center; margin-top: 60px; padding-top: 40px;
+      border-top: 1px solid var(--border);
+      font-style: italic; color: var(--text-dim);
+      font-size: 1.05rem;
+    }
+
+    /* ── SCROLL SPY ── */
+    .level[id] { scroll-margin-top: 80px; }
+    h3[id] { scroll-margin-top: 80px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .toc { display: none; }
+      .content { margin-left: 0; padding: 80px 24px 80px; }
+      .hero h1 { font-size: 2.2rem; }
+      .daily-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Smooth animations */
+    .level { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+    .level.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">phantom ai</a>
+    <div class="nav-links">
+      <a href="#level-1">Foundation</a>
+      <a href="#level-2">Five Lenses</a>
+      <a href="#level-3">Reasoning</a>
+      <a href="#level-4">Imagination</a>
+      <a href="#level-5">Practice</a>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <!-- TOC -->
+    <aside class="toc">
+      <div class="toc-title">Contents</div>
+      <a href="#level-1" class="toc-level">Level 1: Foundation</a>
+      <a href="#three-second">The 3-Second Rule</a>
+
+      <a href="#level-2" class="toc-level">Level 2: Five Lenses</a>
+      <a href="#lens-1">🔍 Reality Lens</a>
+      <a href="#lens-2">🔄 Inversion Lens</a>
+      <a href="#lens-3">🌊 Ripple Lens</a>
+      <a href="#lens-4">👥 Incentive Lens</a>
+      <a href="#lens-5">🎯 Relevance Lens</a>
+
+      <a href="#level-3" class="toc-level">Level 3: Reasoning</a>
+      <a href="#steel-man">Steel Man Method</a>
+      <a href="#map-territory">Map ≠ Territory</a>
+      <a href="#first-principles">First Principles</a>
+
+      <a href="#level-4" class="toc-level">Level 4: Imagination</a>
+      <a href="#lateral">Lateral Thinking</a>
+      <a href="#scenarios">Three Futures</a>
+      <a href="#pre-mortem">The Pre-Mortem</a>
+
+      <a href="#level-5" class="toc-level">Level 5: Daily Practice</a>
+      <a href="#master">The Master Question</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- HERO -->
+      <div class="hero">
+        <span class="hero-emoji">🧠</span>
+        <h1>The Phantom<br><em>Thinking System</em></h1>
+        <p class="hero-sub">A mental operating system for clearer, deeper, more powerful thinking. Not theory — practice.</p>
+      </div>
+
+      <!-- ═══ LEVEL 1 ═══ -->
+      <section class="level" id="level-1">
+        <span class="level-badge l1">Level 1</span>
+        <h2>The Foundation — How to See Clearly</h2>
+        <p>Most people don't think. They <strong>react</strong>. Thinking is a deliberate act. It starts with noticing that you're about to react — and choosing to pause instead.</p>
+
+        <h3 id="three-second">The 3-Second Rule</h3>
+        <p>Before any decision, opinion, or response:</p>
+
+        <div class="quote-block">Pause. Breathe. Ask: "What am I actually looking at?"</div>
+
+        <p>This sounds trivial. It's not. 90% of bad decisions come from acting on the <em>first interpretation</em> your brain offers. Your brain is lazy — it gives you the fastest answer, not the best one.</p>
+
+        <div class="practice-block">
+          <div class="label">🏋️ Practice</div>
+          Next time someone says something that triggers you, count to 3 before responding. In those 3 seconds, ask: <em>"Is my reaction about what they said, or about how I feel?"</em>
+        </div>
+      </section>
+
+      <!-- ═══ LEVEL 2 ═══ -->
+      <section class="level" id="level-2">
+        <span class="level-badge l2">Level 2</span>
+        <h2>The Five Lenses</h2>
+        <p>Every situation, problem, or idea should be examined through <strong>five different lenses</strong> before you form a conclusion. Most people only use one or two. Using all five is what separates deep thinkers from surface-level ones.</p>
+
+        <!-- Lens 1 -->
+        <h3 id="lens-1"><span class="lens-icon">🔍</span> Lens 1: WHAT IS (Reality Lens)</h3>
+        <div class="quote-block">"What are the actual facts, stripped of emotion and assumption?"</div>
+        <ul>
+          <li>What do I <strong>know</strong> vs. what do I <strong>assume</strong>?</li>
+          <li>What evidence exists? Is it firsthand or secondhand?</li>
+          <li>If I had to prove this in court, what would hold up?</li>
+        </ul>
+
+        <div class="warning-block">
+          <div class="label">⚠️ The Trap</div>
+          We confuse feelings with facts. "This business idea will work" is not a fact. "This market has 50M users and 3 competitors" is closer to one.
+        </div>
+
+        <div class="practice-block">
+          <div class="label">🏋️ Exercise</div>
+          Take any belief you hold strongly. Write down ONLY the hard evidence supporting it. No feelings. No "everyone knows." Just data. You'll be shocked how thin most beliefs are.
+        </div>
+
+        <!-- Lens 2 -->
+        <h3 id="lens-2"><span class="lens-icon">🔄</span> Lens 2: WHAT IF THE OPPOSITE IS TRUE (Inversion)</h3>
+        <div class="quote-block">"What would the world look like if my assumption is completely wrong?"</div>
+        <p>This is the most powerful thinking tool that exists. Charlie Munger built a $2B fortune largely on this one principle.</p>
+
+        <ul>
+          <li>You think a business idea will succeed → <strong>Ask:</strong> "How exactly would this fail? List 10 ways."</li>
+          <li>You think someone is wrong → <strong>Ask:</strong> "What if they're right? What would that mean?"</li>
+          <li>You want to achieve X → <strong>Ask:</strong> "What would guarantee I DON'T achieve X?" Then avoid those things.</li>
+        </ul>
+
+        <div class="example-block">
+          <div class="label">💡 Example</div>
+          Instead of "How do I make this app successful?" ask <strong>"What would make users delete this app in the first week?"</strong> Then design against those failures.
+        </div>
+
+        <div class="insight-block">
+          <div class="label">🔑 The Power</div>
+          Inversion catches blind spots that forward thinking misses. Your brain naturally builds a case FOR your ideas. Inversion forces it to build a case AGAINST them.
+        </div>
+
+        <!-- Lens 3 -->
+        <h3 id="lens-3"><span class="lens-icon">🌊</span> Lens 3: SECOND AND THIRD ORDER EFFECTS (Ripple)</h3>
+        <div class="quote-block">"Then what? And then what after that?"</div>
+        <p>Most people think one step ahead. Exceptional thinkers think three.</p>
+
+        <div class="chain">
+          <div class="chain-step">Action</div>
+          <span class="chain-arrow">→</span>
+          <div class="chain-step">1st effect (obvious)</div>
+          <span class="chain-arrow">→</span>
+          <div class="chain-step">2nd effect (hidden)</div>
+          <span class="chain-arrow">→</span>
+          <div class="chain-step">3rd effect (nobody sees)</div>
+        </div>
+
+        <div class="example-block">
+          <div class="label">💡 Real Example</div>
+          <strong>Action:</strong> A city raises minimum wage to $20/hr<br>
+          <strong>1st order:</strong> Workers earn more money ✓<br>
+          <strong>2nd order:</strong> Small businesses raise prices or cut staff<br>
+          <strong>3rd order:</strong> Some businesses close → fewer jobs → the workers the policy was meant to help are now unemployed
+        </div>
+
+        <div class="practice-block">
+          <div class="label">🏋️ Practice</div>
+          For every decision, ask "Then what?" three times in a row. Write down the chain. You'll start seeing consequences nobody else sees.
+        </div>
+
+        <!-- Lens 4 -->
+        <h3 id="lens-4"><span class="lens-icon">👥</span> Lens 4: WHO BENEFITS (Incentive Lens)</h3>
+        <div class="quote-block">"Who gains from me believing this? What are the hidden incentives?"</div>
+        <p>This lens alone will make you smarter than 80% of people. <strong>Follow the money, follow the power, follow the incentive.</strong></p>
+
+        <ul>
+          <li>A news article makes you angry → <strong>Who benefits from your anger?</strong> (The platform — engagement = ad revenue)</li>
+          <li>Someone gives you advice → <strong>Do they benefit from you following it?</strong></li>
+          <li>A "free" product → <strong>You are the product.</strong> What data are they collecting?</li>
+          <li>A study says X is good/bad → <strong>Who funded the study?</strong></li>
+        </ul>
+
+        <div class="insight-block">
+          <div class="label">🔑 The Incentive Test</div>
+          Before accepting any claim, ask:<br>
+          <ol class="step-list" style="margin-top:10px">
+            <li>Who is telling me this?</li>
+            <li>What do they gain if I believe it?</li>
+            <li>What do they lose if I don't?</li>
+          </ol>
+          <p style="margin-top:10px;margin-bottom:0">If the answer to #2 is "a lot" — verify independently.</p>
+        </div>
+
+        <!-- Lens 5 -->
+        <h3 id="lens-5"><span class="lens-icon">🎯</span> Lens 5: SO WHAT? (Relevance Lens)</h3>
+        <div class="quote-block">"Why does this actually matter? What changes because of this?"</div>
+        <p>This lens cuts through noise. Most information, most debates, most worries fail this test.</p>
+
+        <ul>
+          <li>"The stock market dropped 2%" → <strong>So what?</strong> Am I selling today? No? Doesn't matter.</li>
+          <li>"Someone criticized me online" → <strong>So what?</strong> Does this person's opinion affect my life? No? Move on.</li>
+          <li>"AI might take my job in 5 years" → <strong>So what should I do TODAY?</strong> Learn skills AI can't replace. Now it's actionable.</li>
+        </ul>
+
+        <div class="insight-block">
+          <div class="label">🔑 The Filter</div>
+          If something doesn't change your actions, it's entertainment, not information. Treat it accordingly.
+        </div>
+      </section>
+
+      <!-- ═══ LEVEL 3 ═══ -->
+      <section class="level" id="level-3">
+        <span class="level-badge l3">Level 3</span>
+        <h2>The Reasoning Engine</h2>
+        <p>Once you see clearly (Level 1) and examine from all angles (Level 2), you need to <strong>reason well</strong>.</p>
+
+        <h3 id="steel-man">The Steel Man Method</h3>
+        <p>Most people argue against the <strong>weakest</strong> version of an opposing idea (straw man). Strong thinkers argue against the <strong>strongest</strong> version (steel man).</p>
+
+        <ol class="step-list">
+          <li>Take an idea you disagree with</li>
+          <li>State it in the STRONGEST possible way — as if you're its best advocate</li>
+          <li>Find the genuine truth inside it (there almost always is one)</li>
+          <li>THEN decide whether you still disagree</li>
+        </ol>
+
+        <div class="insight-block">
+          <div class="label">🔑 Why This Works</div>
+          If you can defeat the strongest version of an argument, your position is solid. If you can only defeat weak versions, your position is fragile and you don't know it yet.
+        </div>
+
+        <h3 id="map-territory">The Map Is Not The Territory</h3>
+        <p>Your mental model of reality is NOT reality. It's a simplified map.</p>
+
+        <ul>
+          <li>Your understanding of a person is <strong>not</strong> that person</li>
+          <li>Your business plan is <strong>not</strong> your business</li>
+          <li>Your theory about why something happened is <strong>not</strong> why it happened</li>
+        </ul>
+
+        <div class="practice-block">
+          <div class="label">🏋️ Test</div>
+          How recently did you change your mind about something important? If you can't remember, your maps are probably outdated.
+        </div>
+
+        <h3 id="first-principles">First Principles Thinking</h3>
+        <p>Instead of reasoning by analogy ("everyone does it this way"), break problems down to their fundamental truths and build up from there.</p>
+
+        <ol class="step-list">
+          <li><strong>What am I trying to achieve?</strong> (The real goal, not the assumed method)</li>
+          <li><strong>What are the fundamental constraints?</strong> (Physics, math, human nature — not convention)</li>
+          <li><strong>What solutions exist if I ignore everything "everyone knows"?</strong></li>
+        </ol>
+
+        <div class="example-block">
+          <div class="label">💡 Elon Musk Example</div>
+          <strong>Everyone:</strong> "Batteries cost $600/kWh. That's just what they cost."<br>
+          <strong>First principles:</strong> "What are batteries made of? Cobalt, nickel, aluminum, carbon. What do those cost on commodity markets? $80/kWh."<br>
+          <strong>Conclusion:</strong> The battery isn't expensive. The manufacturing process is. Redesign the process.
+        </div>
+
+        <div class="practice-block">
+          <div class="label">🏋️ Your Version</div>
+          Next time you're stuck, ask: <em>"If nobody had ever done this before and I was starting from scratch with only the laws of physics and basic economics, how would I approach this?"</em>
+        </div>
+      </section>
+
+      <!-- ═══ LEVEL 4 ═══ -->
+      <section class="level" id="level-4">
+        <span class="level-badge l4">Level 4</span>
+        <h2>The Imagination Engine</h2>
+        <p>Logic gets you from A to B. <strong>Imagination gets you everywhere else.</strong></p>
+
+        <h3 id="lateral">Lateral Thinking: The Random Entry Method</h3>
+        <p>When you're stuck on a problem:</p>
+        <ol class="step-list">
+          <li>Pick a completely random word (open a dictionary, use any word you see)</li>
+          <li>Force a connection between that word and your problem</li>
+          <li>Follow wherever the absurd connection leads</li>
+        </ol>
+
+        <div class="example-block">
+          <div class="label">💡 Example</div>
+          <strong>Problem:</strong> "How to get more users for my app"<br>
+          <strong>Random word:</strong> "Dentist"<br>
+          <strong>Forced connections:</strong> "What if the app had checkups... what if we targeted waiting rooms... what if dentists recommended our app for health tracking..."<br>
+          <strong>Breakthrough:</strong> Partnership with healthcare providers for distribution.
+        </div>
+
+        <div class="insight-block">
+          <div class="label">🔑 Why It Works</div>
+          Your brain has fixed neural pathways for familiar problems. Random entry forces NEW pathways. The connection doesn't need to be logical — it just needs to be a new starting point.
+        </div>
+
+        <h3 id="scenarios">Scenario Thinking: The Three Futures</h3>
+        <p>For any important decision, write out three scenarios:</p>
+
+        <table class="scenario-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="col-good">Optimistic</th>
+              <th class="col-mid">Realistic</th>
+              <th class="col-bad">Catastrophic</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>What happens</td>
+              <td>Best case</td>
+              <td>Most likely</td>
+              <td>Worst case</td>
+            </tr>
+            <tr>
+              <td>Probability</td>
+              <td>~10-20%</td>
+              <td>~60-70%</td>
+              <td>~10-20%</td>
+            </tr>
+            <tr>
+              <td>My response</td>
+              <td>How I capitalize</td>
+              <td>How I execute</td>
+              <td>How I survive</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="insight-block">
+          <div class="label">🔑 The Insight</div>
+          If you can survive the catastrophic scenario, the decision is probably worth taking. If the catastrophic scenario ruins you, the decision needs more thought no matter how good the upside.
+        </div>
+
+        <h3 id="pre-mortem">The Pre-Mortem</h3>
+        <p>Before starting any project, imagine it's <strong>one year from now and the project has completely failed.</strong></p>
+        <p>Now ask: <strong>Why did it fail?</strong></p>
+        <p>Write down every reason. Be specific. Be brutal.</p>
+
+        <div class="insight-block">
+          <div class="label">🔑 Why This Is 10× More Useful Than Planning For Success</div>
+          <ul style="margin-bottom:0">
+            <li>It activates your threat-detection brain (more accurate than your optimism brain)</li>
+            <li>It surfaces risks you'd otherwise ignore</li>
+            <li>It gives you a prevention checklist</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══ LEVEL 5 ═══ -->
+      <section class="level" id="level-5">
+        <span class="level-badge l5">Level 5</span>
+        <h2>The Daily Practice</h2>
+        <p>Thinking is a muscle. These are your reps.</p>
+
+        <div class="daily-grid">
+          <div class="daily-card">
+            <div class="time" style="color:var(--orange)">☀️ Morning (5 min)</div>
+            <div class="prompt">"What is the ONE decision today that matters most?"</div>
+            <p style="margin-top:8px;margin-bottom:0;font-size:0.88rem;color:var(--text-dim)">Give that decision the 5 Lenses treatment. Everything else can be decided quickly.</p>
+          </div>
+          <div class="daily-card">
+            <div class="time" style="color:var(--blue)">🌤️ During the Day</div>
+            <div class="prompt">"When you feel certain, pause."</div>
+            <p style="margin-top:8px;margin-bottom:0;font-size:0.88rem;color:var(--text-dim)">Certainty is a feeling, not evidence. Ask: "What would change my mind?"</p>
+          </div>
+          <div class="daily-card">
+            <div class="time" style="color:var(--accent)">🌙 Evening (5 min)</div>
+            <div class="prompt">"What did I believe this morning that I should update?"</div>
+            <p style="margin-top:8px;margin-bottom:0;font-size:0.88rem;color:var(--text-dim)">Write it down. One sentence. This is how your mental models stay current.</p>
+          </div>
+          <div class="daily-card">
+            <div class="time" style="color:var(--green)">📅 Weekly (30 min)</div>
+            <div class="prompt">"Pick one long-held belief. Stress-test it."</div>
+            <p style="margin-top:8px;margin-bottom:0;font-size:0.88rem;color:var(--text-dim)">Apply inversion, first principles, steel manning. Does it survive?</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ MASTER QUESTION ═══ -->
+      <section class="level" id="master" style="border-bottom:none">
+        <div class="master-question">
+          <div class="mq-label">The Master Question — The Skeleton Key</div>
+          <blockquote>"What would have to be true for this to be correct?"</blockquote>
+        </div>
+
+        <p>Use it on everything:</p>
+        <ul>
+          <li><strong>A business idea:</strong> "What would have to be true for this to make $1M?"</li>
+          <li><strong>A relationship:</strong> "What would have to be true for this person to be trustworthy?"</li>
+          <li><strong>A fear:</strong> "What would have to be true for this fear to be rational?"</li>
+          <li><strong>A news story:</strong> "What would have to be true for this headline to be accurate?"</li>
+        </ul>
+
+        <div class="insight-block">
+          <div class="label">🔑 This Question Does Three Things At Once</div>
+          <ol class="step-list">
+            <li><strong>Identifies hidden assumptions</strong> — you'll find 5-10 things that "have to be true"</li>
+            <li><strong>Makes them testable</strong> — you can verify each one</li>
+            <li><strong>Reveals the weakest link</strong> — the assumption least likely to be true is where the idea breaks</li>
+          </ol>
+        </div>
+
+        <div class="closing">
+          <p>Thinking clearly isn't a talent. It's a habit.<br>
+          Start with one lens. Add another next week.<br>
+          Within a month, you'll see things nobody around you sees.</p>
+          <p style="margin-top:12px"><strong>That's not genius. That's practice.</strong></p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Scroll spy for TOC
+    const tocLinks = document.querySelectorAll('.toc a');
+    const sections = document.querySelectorAll('.level[id], h3[id]');
+
+    function updateToc() {
+      let current = '';
+      sections.forEach(s => {
+        if (s.getBoundingClientRect().top < 120) current = s.id;
+      });
+      tocLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.level').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
