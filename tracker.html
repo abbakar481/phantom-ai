@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Tracker — 90-Day Mastery Plan</title>
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#09090b;--bg2:#0f0f12;--card:#111113;--card2:#18181b;--border:#1e1e24;--border2:#27272a;--text:#e4e4e7;--bright:#fafafa;--muted:#a1a1aa;--dim:#71717a;--faint:#52525b;--accent:#a855f7;--accent2:#6366f1;--green:#22c55e;--blue:#3b82f6;--orange:#f97316;--red:#ef4444;--yellow:#eab308;--cyan:#06b6d4}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{-webkit-font-smoothing:antialiased}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;background:rgba(9,9,11,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;gap:6px}
+    .nav-links a{font-size:0.82rem;font-weight:500;color:var(--dim);padding:6px 12px;border-radius:6px;transition:all 0.2s}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+
+    .page{max-width:900px;margin:0 auto;padding:84px 24px 80px}
+
+    /* Header */
+    .header{margin-bottom:32px}
+    .header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
+    .header p{color:var(--dim);font-size:0.92rem}
+
+    /* Stats row */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+    .stat{padding:18px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-align:center}
+    .stat .val{font-size:1.8rem;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-1px}
+    .stat .lbl{font-size:0.75rem;color:var(--dim);margin-top:2px}
+
+    /* Phase indicator */
+    .phase-bar{padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
+    .phase-bar .phase-label{font-size:0.82rem;font-weight:600;white-space:nowrap}
+    .phase-progress{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+    .phase-fill{height:100%;border-radius:4px;transition:width 0.5s ease}
+    .phase-bar .phase-day{font-size:0.82rem;color:var(--dim);white-space:nowrap;font-family:'JetBrains Mono',monospace}
+
+    /* Today's practice */
+    .today{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:28px;overflow:hidden}
+    .today-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .today-header h2{font-size:1.1rem;font-weight:700}
+    .today-header .date{font-size:0.82rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+    .tasks{padding:8px 0}
+    .task{padding:14px 22px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(30,30,36,0.5);transition:background 0.2s;cursor:pointer}
+    .task:last-child{border-bottom:none}
+    .task:hover{background:rgba(255,255,255,0.02)}
+    .task-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;font-size:0.8rem}
+    .task.done .task-check{background:var(--green);border-color:var(--green);color:#fff}
+    .task-info{flex:1}
+    .task-name{font-size:0.92rem;font-weight:600;transition:color 0.2s}
+    .task.done .task-name{color:var(--dim);text-decoration:line-through}
+    .task-desc{font-size:0.8rem;color:var(--dim)}
+    .task-time{font-size:0.75rem;color:var(--faint);font-family:'JetBrains Mono',monospace}
+
+    /* Journal */
+    .journal{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:28px;overflow:hidden}
+    .journal-header{padding:18px 22px;border-bottom:1px solid var(--border)}
+    .journal-header h2{font-size:1.1rem;font-weight:700}
+    .journal-body{padding:18px 22px}
+    .journal textarea{width:100%;min-height:120px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.92rem;line-height:1.6;resize:vertical;transition:border-color 0.2s}
+    .journal textarea:focus{outline:none;border-color:var(--accent)}
+    .journal textarea::placeholder{color:var(--faint)}
+    .journal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .journal-saved{font-size:0.8rem;color:var(--green);opacity:0;transition:opacity 0.3s}
+    .journal-saved.show{opacity:1}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.2s;border:none}
+    .btn:active{transform:scale(0.97)}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+    .btn-primary:hover{box-shadow:0 4px 20px rgba(168,85,247,0.25)}
+    .btn-secondary{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-secondary:hover{border-color:var(--border2);color:var(--text)}
+    .btn-sm{padding:6px 12px;font-size:0.78rem}
+    .btn-danger{background:rgba(239,68,68,0.1);color:var(--red)}
+    .btn-danger:hover{background:var(--red);color:#fff}
+
+    /* Streak calendar */
+    .calendar{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:28px;overflow:hidden}
+    .calendar-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .calendar-header h2{font-size:1.1rem;font-weight:700}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:18px 22px}
+    .cal-day-label{text-align:center;font-size:0.68rem;color:var(--faint);font-weight:600;padding-bottom:6px}
+    .cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:var(--dim);transition:all 0.2s;position:relative}
+    .cal-day.empty{visibility:hidden}
+    .cal-day.today{border:1px solid var(--accent);color:var(--bright);font-weight:600}
+    .cal-day.completed{background:var(--green);color:#fff;font-weight:600}
+    .cal-day.partial{background:rgba(234,179,8,0.3);color:var(--yellow);font-weight:600}
+    .cal-day.future{color:var(--faint)}
+
+    /* History */
+    .history{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .history-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .history-header h2{font-size:1.1rem;font-weight:700}
+    .history-list{max-height:400px;overflow-y:auto}
+    .history-item{padding:14px 22px;border-bottom:1px solid rgba(30,30,36,0.5);display:flex;align-items:center;gap:14px}
+    .history-item:last-child{border-bottom:none}
+    .history-date{font-size:0.82rem;font-weight:600;font-family:'JetBrains Mono',monospace;min-width:90px}
+    .history-tasks{font-size:0.85rem;color:var(--muted);flex:1}
+    .history-score{font-size:0.85rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+    /* Empty state */
+    .empty-state{text-align:center;padding:48px 24px;color:var(--dim)}
+    .empty-state .icon{font-size:2.5rem;margin-bottom:12px}
+    .empty-state p{font-size:0.92rem}
+
+    @media(max-width:768px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .calendar-grid{gap:2px;padding:12px}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">phantom ai</a>
+  <div class="nav-links">
+    <a href="mastery.html">📖 Full Plan</a>
+    <a href="thinking-system.html">🧠 Thinking System</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="header">
+    <h1>📊 Practice Tracker</h1>
+    <p>Track your 90-day deep reasoning & imagination mastery journey.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats-grid"></div>
+
+  <!-- Phase Progress -->
+  <div class="phase-bar" id="phase-bar"></div>
+
+  <!-- Today's Practice -->
+  <div class="today">
+    <div class="today-header">
+      <h2>Today's Practice</h2>
+      <span class="date" id="today-date"></span>
+    </div>
+    <div class="tasks" id="task-list"></div>
+  </div>
+
+  <!-- Journal -->
+  <div class="journal">
+    <div class="journal-header"><h2>✍️ Daily Journal</h2></div>
+    <div class="journal-body">
+      <textarea id="journal-text" placeholder="Write today's observations, disagreements, assumptions, perspectives, or what-if explorations here..."></textarea>
+      <div class="journal-actions">
+        <span class="journal-saved" id="saved-indicator">✓ Saved</span>
+        <button class="btn btn-primary" onclick="saveJournal()">Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Streak Calendar -->
+  <div class="calendar">
+    <div class="calendar-header">
+      <h2>🔥 Streak Calendar</h2>
+      <span id="cal-month" style="font-size:0.85rem;color:var(--dim);font-family:'JetBrains Mono',monospace"></span>
+    </div>
+    <div class="calendar-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- History -->
+  <div class="history">
+    <div class="history-header">
+      <h2>📜 History</h2>
+      <button class="btn btn-danger btn-sm" onclick="if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('phantom_tracker');location.reload()}">Reset All</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+<script>
+// ── Tracker State ──
+const STORAGE_KEY = 'phantom_tracker';
+const START_DATE_KEY = 'phantom_tracker_start';
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function setState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function getStartDate() {
+  let d = localStorage.getItem(START_DATE_KEY);
+  if (!d) { d = todayStr(); localStorage.setItem(START_DATE_KEY, d); }
+  return d;
+}
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function daysBetween(a, b) {
+  return Math.floor((new Date(b) - new Date(a)) / 86400000);
+}
+function formatDate(str) {
+  const d = new Date(str + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ── Phase & Tasks Logic ──
+function getCurrentDay() {
+  return daysBetween(getStartDate(), todayStr()) + 1;
+}
+
+function getPhase(day) {
+  if (day <= 14) return { name: 'Phase 1: Destroy Defaults', sub: 'Observation Protocol', color: 'var(--red)', num: 1, start: 1, end: 14 };
+  if (day <= 28) return { name: 'Phase 1: Destroy Defaults', sub: 'Disagreement Diary', color: 'var(--red)', num: 1, start: 15, end: 28 };
+  if (day <= 56) return { name: 'Phase 2: Build Reasoning', sub: '4-Block Workout', color: 'var(--blue)', num: 2, start: 29, end: 56 };
+  if (day <= 84) return { name: 'Phase 3: Unleash Imagination', sub: 'Synthesis + What-If', color: 'var(--orange)', num: 3, start: 57, end: 84 };
+  return { name: 'Master Habits', sub: 'Forever Practice', color: 'var(--green)', num: 4, start: 85, end: Infinity };
+}
+
+function getTasks(day) {
+  if (day <= 14) return [
+    { id: 'observe', name: 'Observation Protocol', desc: 'Pick one ordinary thing, analyze for 10 min', time: '10 min' },
+  ];
+  if (day <= 28) return [
+    { id: 'disagree', name: 'Disagreement Diary', desc: 'Argue against something you agree with (200-300 words)', time: '15 min' },
+  ];
+  if (day <= 56) return [
+    { id: 'causal', name: 'Causal Chain', desc: 'Trace an event 5 levels back and 5 levels forward', time: '5 min' },
+    { id: 'assume', name: 'Assumption Excavation', desc: 'List hidden assumptions in a statement you heard', time: '5 min' },
+    { id: 'persp', name: 'Perspective Swap', desc: 'Write a situation from 3 different viewpoints', time: '5 min' },
+    { id: 'impossible', name: 'Impossible Question', desc: 'Seriously answer an absurd question', time: '5 min' },
+  ];
+  if (day <= 84) return [
+    { id: 'synth', name: 'Synthesis', desc: 'Combine two unrelated ideas into something new', time: '5 min' },
+    { id: 'whatif', name: 'What-If Journal', desc: 'Explore a deep what-if across 5 life areas', time: '10 min' },
+    { id: 'create', name: 'Weekly Creation', desc: 'Work on this week\'s creation project', time: '15 min' },
+  ];
+  return [
+    { id: 'read', name: 'Read Outside Your World', desc: 'Read something from an unrelated field', time: '15 min' },
+    { id: 'think', name: 'Protected Thinking Time', desc: 'No phone, no input. Just a problem and your mind', time: '30 min' },
+    { id: 'write', name: 'Write to Think', desc: 'Write down one idea clearly and completely', time: '10 min' },
+  ];
+}
+
+// ── Render ──
+function render() {
+  const state = getState();
+  const today = todayStr();
+  const day = getCurrentDay();
+  const phase = getPhase(day);
+  const tasks = getTasks(day);
+  const todayData = state[today] || { tasks: {}, journal: '' };
+
+  // Stats
+  let totalDays = 0, streak = 0, totalTasks = 0, perfectDays = 0;
+  const sortedDates = Object.keys(state).sort().reverse();
+
+  // Calculate streak
+  let checkDate = today;
+  while (true) {
+    const d = state[checkDate];
+    if (d && d.tasks) {
+      const dayTasks = getTasks(daysBetween(getStartDate(), checkDate) + 1);
+      const completed = dayTasks.filter(t => d.tasks[t.id]).length;
+      if (completed > 0) { streak++; } else break;
+    } else if (checkDate === today) {
+      // Today might not have entries yet, check yesterday for streak
+    } else break;
+    const prev = new Date(checkDate + 'T12:00:00');
+    prev.setDate(prev.getDate() - 1);
+    checkDate = prev.toISOString().split('T')[0];
+    if (daysBetween(getStartDate(), checkDate) < 0) break;
+  }
+
+  Object.values(state).forEach(d => {
+    if (d.tasks && Object.keys(d.tasks).length > 0) {
+      totalDays++;
+      const done = Object.values(d.tasks).filter(Boolean).length;
+      totalTasks += done;
+    }
+  });
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat"><div class="val" style="color:var(--accent)">${day}</div><div class="lbl">Day of 90</div></div>
+    <div class="stat"><div class="val" style="color:var(--orange)">${streak}</div><div class="lbl">Day Streak 🔥</div></div>
+    <div class="stat"><div class="val" style="color:var(--green)">${totalTasks}</div><div class="lbl">Tasks Done</div></div>
+    <div class="stat"><div class="val" style="color:var(--blue)">${totalDays}</div><div class="lbl">Active Days</div></div>
+  `;
+
+  // Phase bar
+  const phaseProgress = phase.end === Infinity ? 100 : Math.min(100, ((day - phase.start + 1) / (phase.end - phase.start + 1)) * 100);
+  document.getElementById('phase-bar').innerHTML = `
+    <div class="phase-label" style="color:${phase.color}">${phase.name}</div>
+    <div class="phase-progress"><div class="phase-fill" style="width:${phaseProgress}%;background:${phase.color}"></div></div>
+    <div class="phase-day">Day ${day}/90</div>
+  `;
+
+  // Today's date
+  document.getElementById('today-date').textContent = formatDate(today);
+
+  // Tasks
+  document.getElementById('task-list').innerHTML = tasks.map(t => {
+    const done = todayData.tasks[t.id] || false;
+    return `
+      <div class="task ${done ? 'done' : ''}" onclick="toggleTask('${t.id}')">
+        <div class="task-check">${done ? '✓' : ''}</div>
+        <div class="task-info">
+          <div class="task-name">${t.name}</div>
+          <div class="task-desc">${t.desc}</div>
+        </div>
+        <div class="task-time">${t.time}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Journal
+  document.getElementById('journal-text').value = todayData.journal || '';
+
+  // Calendar
+  renderCalendar(state);
+
+  // History
+  renderHistory(state);
+}
+
+function toggleTask(taskId) {
+  const state = getState();
+  const today = todayStr();
+  if (!state[today]) state[today] = { tasks: {}, journal: '' };
+  state[today].tasks[taskId] = !state[today].tasks[taskId];
+  setState(state);
+  render();
+}
+
+function saveJournal() {
+  const state = getState();
+  const today = todayStr();
+  if (!state[today]) state[today] = { tasks: {}, journal: '' };
+  state[today].journal = document.getElementById('journal-text').value;
+  setState(state);
+  const ind = document.getElementById('saved-indicator');
+  ind.classList.add('show');
+  setTimeout(() => ind.classList.remove('show'), 2000);
+}
+
+// Auto-save journal
+let journalTimer = null;
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('journal-text').addEventListener('input', () => {
+    clearTimeout(journalTimer);
+    journalTimer = setTimeout(saveJournal, 1500);
+  });
+});
+
+function renderCalendar(state) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = todayStr();
+
+  document.getElementById('cal-month').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let html = ['S','M','T','W','T','F','S'].map(d => `<div class="cal-day-label">${d}</div>`).join('');
+
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === today;
+    const isFuture = dateStr > today;
+    const dayData = state[dateStr];
+
+    let cls = 'cal-day';
+    if (isToday) cls += ' today';
+    else if (isFuture) cls += ' future';
+    else if (dayData && dayData.tasks) {
+      const taskCount = Object.values(dayData.tasks).filter(Boolean).length;
+      const totalForDay = getTasks(daysBetween(getStartDate(), dateStr) + 1).length;
+      if (taskCount >= totalForDay && totalForDay > 0) cls += ' completed';
+      else if (taskCount > 0) cls += ' partial';
+    }
+
+    html += `<div class="${cls}">${d}</div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function renderHistory(state) {
+  const dates = Object.keys(state).sort().reverse().slice(0, 30);
+  const list = document.getElementById('history-list');
+
+  if (dates.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>No entries yet. Complete today\'s practice to start your journey!</p></div>';
+    return;
+  }
+
+  list.innerHTML = dates.map(date => {
+    const d = state[date];
+    const dayNum = daysBetween(getStartDate(), date) + 1;
+    const dayTasks = getTasks(dayNum);
+    const completed = dayTasks.filter(t => d.tasks && d.tasks[t.id]).length;
+    const total = dayTasks.length;
+    const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+    const color = pct === 100 ? 'var(--green)' : pct > 0 ? 'var(--yellow)' : 'var(--dim)';
+    const journal = d.journal ? ' · 📝' : '';
+
+    return `
+      <div class="history-item">
+        <div class="history-date">${formatDate(date)}</div>
+        <div class="history-tasks">Day ${dayNum} · ${completed}/${total} tasks${journal}</div>
+        <div class="history-score" style="color:${color}">${pct}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
