@@ -6,22 +6,21 @@ const Phantom = {
   // ── State ──
   user: null,
   toastTimeout: null,
-  // Base path — change this if deploying to a subdirectory
+  // Base path — auto-detected from current URL
+  // Works on any host: root domain, subdirectory, localhost
   basePath: (function() {
-    const base = document.querySelector('base');
-    if (base) return base.getAttribute('href').replace(/\/$/, '');
-    // Auto-detect from script src
-    const scripts = document.querySelectorAll('script[src*="app.js"]');
-    if (scripts.length) {
-      const src = scripts[0].getAttribute('src');
-      const idx = src.indexOf('js/app.js');
-      if (idx > 0) return src.substring(0, idx - 1);
-    }
-    return '';
+    // Get directory of current page: /phantom-ai/login.html → /phantom-ai
+    // For /phantom-ai/ → /phantom-ai
+    const path = window.location.pathname;
+    const lastSlash = path.lastIndexOf('/');
+    const dir = path.substring(0, lastSlash);
+    // If we're at root like /index.html, dir is empty, that's fine
+    return dir || '';
   })(),
 
   url(path) {
     if (path.startsWith('http')) return path;
+    // Strip leading slash if present
     if (path.startsWith('/')) path = path.substring(1);
     return this.basePath + '/' + path;
   },
