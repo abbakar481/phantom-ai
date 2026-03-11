@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/phantom-ai/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Phantom</title>
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👻</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/global.css">
+  <style>
+    /* ── APP LAYOUT ── */
+    .app { display: flex; min-height: 100vh; padding-top: var(--nav-height); }
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      position: fixed; top: var(--nav-height); bottom: 0; left: 0;
+      overflow-y: auto; background: var(--bg);
+    }
+    .main { flex: 1; margin-left: 240px; padding: 32px; min-width: 0; }
+
+    /* Sidebar */
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-faint);
+      padding: 0 12px; margin-bottom: 8px;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--radius-sm);
+      font-size: 0.9rem; color: var(--text-muted);
+      transition: all var(--transition); cursor: pointer;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .sidebar-link.active { background: var(--purple-dim); color: var(--accent); font-weight: 600; }
+    .sidebar-link .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .sidebar-link .count {
+      margin-left: auto; font-size: 0.72rem; font-weight: 600;
+      background: var(--accent); color: white;
+      padding: 1px 7px; border-radius: 50px;
+    }
+
+    /* Dashboard header */
+    .dash-header { margin-bottom: 32px; }
+    .dash-greeting {
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;
+    }
+    .dash-sub { color: var(--text-dim); font-size: 0.92rem; }
+    .dash-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 50px;
+      background: var(--green-dim); font-size: 0.82rem;
+      color: var(--green); font-weight: 500; margin-top: 12px;
+    }
+
+    /* Stats row */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card { padding: 20px; }
+    .stat-label { font-size: 0.78rem; color: var(--text-dim); font-weight: 500; margin-bottom: 6px; }
+    .stat-value {
+      font-size: 1.8rem; font-weight: 800; letter-spacing: -1px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-change {
+      font-size: 0.75rem; font-weight: 600; margin-top: 4px;
+      display: inline-flex; align-items: center; gap: 3px;
+    }
+    .stat-up { color: var(--green); }
+    .stat-down { color: var(--red); }
+
+    /* Two-column layout */
+    .dash-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+
+    /* Activity feed */
+    .feed { padding: 0; }
+    .feed-title {
+      padding: 18px 22px; font-size: 0.95rem; font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .activity-item {
+      padding: 14px 22px; display: flex; gap: 12px; align-items: flex-start;
+      border-bottom: 1px solid rgba(35,35,42,0.4);
+      transition: background var(--transition);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item:hover { background: rgba(255,255,255,0.02); }
+    .activity-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .activity-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+    .activity-detail { font-size: 0.82rem; color: var(--text-muted); }
+    .activity-time { font-size: 0.72rem; color: var(--text-faint); margin-top: 3px; }
+
+    /* Approvals */
+    .approvals { padding: 0; }
+    .approval-item {
+      padding: 18px 20px; border-bottom: 1px solid rgba(35,35,42,0.4);
+      transition: all 0.3s;
+    }
+    .approval-item:last-child { border-bottom: none; }
+    .approval-top { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .approval-top .icon { font-size: 1.2rem; }
+    .approval-top .title { font-size: 0.92rem; font-weight: 600; }
+    .approval-preview {
+      font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;
+      padding: 10px 14px; background: var(--bg); border-radius: var(--radius-sm);
+      border-left: 2px solid var(--accent); margin-bottom: 12px;
+    }
+    .approval-actions { display: flex; gap: 8px; }
+
+    /* Chart area */
+    .chart-card { padding: 20px 22px; }
+    .chart-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
+    .chart-bars {
+      display: flex; align-items: flex-end; gap: 8px; height: 120px;
+    }
+    .chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .chart-bar {
+      width: 100%; border-radius: 4px 4px 0 0;
+      background: linear-gradient(to top, var(--accent), var(--accent2));
+      transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      min-height: 4px;
+    }
+    .chart-label { font-size: 0.7rem; color: var(--text-faint); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .dash-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <a href="/" class="site-logo">phantom <span>ai</span></a>
+    <button class="nav-mobile-toggle" aria-label="Menu">☰</button>
+    <div class="nav-links">
+      <a href="/settings.html" class="btn btn-ghost btn-sm">⚙️ Settings</a>
+      <a href="#" class="btn btn-ghost btn-sm" onclick="Phantom.logout()">Log out</a>
+    </div>
+  </nav>
+
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Main</div>
+        <a href="/dashboard.html" class="sidebar-link active"><span class="icon">📊</span> Dashboard</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Activity log coming soon','info')"><span class="icon">📋</span> Activity <span class="count">12</span></a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Approvals page coming soon','info')"><span class="icon">✅</span> Approvals <span class="count">3</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Modules</div>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Email module coming soon','info')"><span class="icon">📧</span> Email Twin</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Bills module coming soon','info')"><span class="icon">💸</span> Bills</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Calendar module coming soon','info')"><span class="icon">📅</span> Calendar</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Money module coming soon','info')"><span class="icon">🛡️</span> Money Guard</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Opportunities module coming soon','info')"><span class="icon">🎯</span> Opportunities</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Account</div>
+        <a href="/settings.html" class="sidebar-link"><span class="icon">⚙️</span> Settings</a>
+        <a href="#" class="sidebar-link" onclick="Phantom.toast('Help center coming soon','info')"><span class="icon">❓</span> Help</a>
+      </div>
+
+      <div style="margin-top:auto;padding:12px;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:0.82rem;font-weight:600;margin-bottom:4px;">Starter Plan</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:10px;">Upgrade for full autopilot</div>
+        <a href="#" class="btn btn-primary btn-sm btn-full" onclick="Phantom.toast('Upgrade flow coming soon','info')">Upgrade to Pro</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="dashboard-content">
+      <!-- Populated by JS -->
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const data = Phantom.getDashboardData();
+      if (!data) return;
+
+      const main = document.getElementById('dashboard-content');
+      const maxChart = Math.max(...data.weeklyChart);
+
+      main.innerHTML = `
+        <!-- Header -->
+        <div class="dash-header">
+          <h1 class="dash-greeting">${data.greeting} 👋</h1>
+          <p class="dash-sub">Here's what Phantom has been up to.</p>
+          <div class="dash-status"><span class="dot-pulse"></span> Phantom is active and working</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="card stat-card">
+            <div class="stat-label">Emails Handled</div>
+            <div class="stat-value">${data.stats.emailsHandled}</div>
+            <div class="stat-change stat-up">↑ 12% this week</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Money Saved</div>
+            <div class="stat-value text-green">$${data.stats.moneySaved.toFixed(0)}</div>
+            <div class="stat-change stat-up">↑ $47 today</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Hours Reclaimed</div>
+            <div class="stat-value" style="color:var(--blue)">${data.stats.hoursReclaimed}</div>
+            <div class="stat-change stat-up">↑ 4.2h this week</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Tasks Completed</div>
+            <div class="stat-value" style="color:var(--orange)">${data.stats.tasksCompleted}</div>
+            <div class="stat-change stat-up">↑ 8 today</div>
+          </div>
+        </div>
+
+        <!-- Two column -->
+        <div class="dash-grid">
+          <!-- Activity Feed -->
+          <div class="card feed">
+            <div class="feed-title">
+              Recent Activity
+              <span class="badge badge-accent">${data.recentActivity.length} today</span>
+            </div>
+            ${data.recentActivity.map(a => `
+              <div class="activity-item">
+                <div class="activity-icon" style="background:${
+                  a.type === 'email' ? 'var(--purple-dim)' :
+                  a.type === 'money' ? 'var(--green-dim)' :
+                  a.type === 'calendar' ? 'var(--blue-dim)' :
+                  a.type === 'deal' ? 'var(--orange-dim)' :
+                  a.type === 'job' ? 'var(--blue-dim)' :
+                  'var(--yellow-dim)'
+                }">${a.icon}</div>
+                <div>
+                  <div class="activity-label">${a.label}</div>
+                  <div class="activity-detail">${a.detail}</div>
+                  <div class="activity-time">${a.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Right column -->
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <!-- Approvals -->
+            <div class="card approvals">
+              <div class="feed-title">
+                Needs Your Approval
+                <span class="badge badge-orange">${data.pendingApprovals.length} pending</span>
+              </div>
+              ${data.pendingApprovals.map(a => `
+                <div class="approval-item" data-approval-id="${a.id}">
+                  <div class="approval-top">
+                    <span class="icon">${a.icon}</span>
+                    <span class="title">${a.title}</span>
+                  </div>
+                  <div class="approval-preview">${a.preview}</div>
+                  <div class="approval-actions">
+                    <button class="btn btn-primary btn-sm" onclick="Phantom.approve('${a.id}')">Approve</button>
+                    <button class="btn btn-ghost btn-sm" onclick="Phantom.dismiss('${a.id}')">Dismiss</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Chart -->
+            <div class="card chart-card">
+              <div class="chart-title">Tasks This Week</div>
+              <div class="chart-bars">
+                ${data.weeklyChart.map((v, i) => `
+                  <div class="chart-bar-group">
+                    <div class="chart-bar" style="height:${(v / maxChart) * 100}%"></div>
+                    <span class="chart-label">${data.weekDays[i]}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Animate chart bars
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.chart-bar').forEach(bar => {
+          const h = bar.style.height;
+          bar.style.height = '4px';
+          requestAnimationFrame(() => { bar.style.height = h; });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

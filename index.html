@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/phantom-ai/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phantom — Your AI Life Double</title>
+  <meta name="description" content="Phantom handles your emails, schedules, bills, and digital busywork while you live your life. Not a copilot. An autopilot.">
+  <meta name="theme-color" content="#09090b">
+  <meta property="og:title" content="Phantom — Your AI Life Double">
+  <meta property="og:description" content="Your AI handles emails, bills, scheduling, and internet busywork — in your voice, while you sleep.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👻</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/global.css">
+  <style>
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      top: -300px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(99,102,241,0.05) 40%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px; border-radius: 50px;
+      background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.25);
+      font-size: 0.85rem; color: var(--accent); font-weight: 500;
+      margin-bottom: 28px; animation: fadeUp 0.6s ease;
+    }
+    .hero h1 { margin-bottom: 20px; animation: fadeUp 0.6s ease 0.1s both; max-width: 800px; }
+    .hero-sub {
+      font-size: 1.2rem; color: var(--text-muted); max-width: 560px;
+      margin-bottom: 40px; animation: fadeUp 0.6s ease 0.2s both;
+    }
+    .hero-cta {
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    /* ── LIVE FEED ── */
+    .live-feed {
+      margin-top: 56px; width: 100%; max-width: 680px;
+      border-radius: var(--radius-lg); overflow: hidden;
+      text-align: left; animation: fadeUp 0.8s ease 0.5s both;
+    }
+    .feed-header {
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.82rem; color: var(--text-dim);
+    }
+    .feed-items { padding: 4px 0; }
+    .feed-item {
+      padding: 12px 20px; display: flex; align-items: flex-start; gap: 12px;
+      opacity: 0; animation: feedIn 0.5s ease forwards;
+    }
+    .feed-item:nth-child(1) { animation-delay: 0.8s; }
+    .feed-item:nth-child(2) { animation-delay: 1.4s; }
+    .feed-item:nth-child(3) { animation-delay: 2.0s; }
+    .feed-item:nth-child(4) { animation-delay: 2.6s; }
+    .feed-item:nth-child(5) { animation-delay: 3.2s; }
+    @keyframes feedIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .feed-icon {
+      width: 34px; height: 34px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .feed-text { font-size: 0.9rem; }
+    .feed-text strong { color: var(--text); font-weight: 600; }
+    .feed-text span { color: var(--text-muted); }
+    .feed-time { font-size: 0.72rem; color: var(--text-faint); margin-top: 3px; }
+    .feed-footer {
+      padding: 14px 20px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .feed-footer .label { font-size: 0.82rem; color: var(--text-dim); }
+    .feed-footer .amount { color: var(--green); font-weight: 700; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .feature-card { padding: 28px; position: relative; overflow: hidden; }
+    .feature-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card:hover { background: var(--bg-card-hover); transform: translateY(-3px); }
+    .feature-emoji { font-size: 1.8rem; margin-bottom: 14px; }
+    .feature-card h3 { margin-bottom: 8px; font-size: 1.1rem; }
+    .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.65; }
+    .feature-card .badge { margin-top: 14px; }
+
+    /* ── HOW IT WORKS ── */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .step { text-align: center; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.3rem; margin: 0 auto 18px;
+    }
+    .step h3 { margin-bottom: 8px; }
+    .step p { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* ── BRIEF MOCKUP ── */
+    .brief { max-width: 580px; margin: 56px auto 0; overflow: hidden; }
+    .brief-header {
+      padding: 18px 22px;
+      background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(99,102,241,0.08));
+      border-bottom: 1px solid var(--border);
+      font-weight: 700; font-size: 1.05rem;
+    }
+    .brief-body { padding: 20px 22px; }
+    .brief-row {
+      padding: 10px 0; display: flex; gap: 12px; align-items: flex-start;
+      border-bottom: 1px solid rgba(35,35,42,0.5);
+    }
+    .brief-row:last-child { border-bottom: none; }
+    .brief-row .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+    .brief-row .text { font-size: 0.92rem; color: var(--text-muted); }
+    .brief-row .text strong { color: var(--text); }
+    .brief-total {
+      margin-top: 16px; padding: 14px; background: var(--green-dim);
+      border-radius: var(--radius); text-align: center;
+    }
+    .brief-total .val {
+      font-size: 1.8rem; font-weight: 800; color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .brief-total .lbl { font-size: 0.82rem; color: var(--text-dim); }
+
+    /* ── PRICING ── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .price-card { padding: 32px; text-align: center; position: relative; }
+    .price-card.featured { border-color: var(--accent); box-shadow: var(--shadow-glow); }
+    .price-card.featured::after {
+      content: 'MOST POPULAR'; position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      padding: 4px 14px; border-radius: 50px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; color: white;
+    }
+    .price-card:hover { transform: translateY(-3px); }
+    .price-name { font-size: 1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+    .price-amount { font-size: 2.8rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 2px; }
+    .price-period { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 24px; }
+    .price-features { text-align: left; margin-bottom: 28px; }
+    .price-features li {
+      padding: 7px 0; font-size: 0.88rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .price-features li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 0.9rem; }
+
+    /* ── CTA ── */
+    .cta-section {
+      text-align: center; padding: 100px 24px; position: relative;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; bottom: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .waitlist-form {
+      display: flex; gap: 10px; max-width: 440px;
+      margin: 28px auto 0; flex-wrap: wrap; justify-content: center;
+    }
+    .waitlist-form input { flex: 1; min-width: 240px; }
+    .waitlist-msg { margin-top: 12px; color: var(--text-dim); font-size: 0.85rem; }
+
+    /* ── SOCIAL PROOF ── */
+    .social-proof {
+      display: flex; align-items: center; justify-content: center;
+      gap: 32px; padding: 48px 0; flex-wrap: wrap;
+    }
+    .proof-stat { text-align: center; }
+    .proof-stat .num {
+      font-size: 2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+    }
+    .proof-stat .lbl { font-size: 0.82rem; color: var(--text-dim); margin-top: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      border-top: 1px solid var(--border); padding: 36px 24px;
+      text-align: center; color: var(--text-dim); font-size: 0.82rem;
+    }
+    .site-footer .site-logo { display: inline-block; margin-bottom: 12px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .features-grid, .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+      .steps { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; }
+    }
+    @media (max-width: 768px) {
+      .hero { padding: 100px 16px 60px; }
+      .live-feed { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <a href="/" class="site-logo">phantom <span>ai</span></a>
+    <button class="nav-mobile-toggle" aria-label="Menu">☰</button>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/login.html" class="btn btn-ghost btn-sm hide-mobile">Log in</a>
+      <a href="/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge"><span class="dot-pulse"></span> Now in private beta</div>
+    <h1>Your AI does the<br><span class="gradient-text">internet for you</span></h1>
+    <p class="hero-sub">Phantom answers your emails, negotiates your bills, manages your schedule, and handles the digital busywork — in your voice, while you sleep.</p>
+    <div class="hero-cta">
+      <a href="/signup.html" class="btn btn-primary btn-lg">Get Early Access</a>
+      <a href="#how" class="btn btn-secondary btn-lg">See how it works ↓</a>
+    </div>
+
+    <div class="live-feed card">
+      <div class="feed-header"><span class="dot-pulse"></span> Phantom is working for Sarah — <em>while she sleeps</em></div>
+      <div class="feed-items">
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--purple-dim)">📧</div>
+          <div><div class="feed-text"><strong>Replied to 14 emails</strong> <span>— declined 2 meetings, confirmed dinner, delegated 3 tasks</span></div><div class="feed-time">3 min ago</div></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--green-dim)">💰</div>
+          <div><div class="feed-text"><strong>Got $47.00 back</strong> <span>— disputed double charge on Visa ****4829</span></div><div class="feed-time">18 min ago</div></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--blue-dim)">📅</div>
+          <div><div class="feed-text"><strong>Rescheduled dentist</strong> <span>— moved to Thursday 3pm, confirmed via text</span></div><div class="feed-time">42 min ago</div></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--orange-dim)">🔥</div>
+          <div><div class="feed-text"><strong>Found flight deal</strong> <span>— Tokyo round-trip $389 (was $814), held 24h</span></div><div class="feed-time">1 hour ago</div></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--blue-dim)">🎯</div>
+          <div><div class="feed-text"><strong>Applied to 3 gigs</strong> <span>— matched freelance profile, personalized each cover letter</span></div><div class="feed-time">2 hours ago</div></div>
+        </div>
+      </div>
+      <div class="feed-footer">
+        <span class="label">This month's savings</span>
+        <span class="amount">$482.30</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof container">
+    <div class="proof-stat"><div class="num text-accent">2,400+</div><div class="lbl">On the waitlist</div></div>
+    <div class="proof-stat"><div class="num text-green">$1.2M</div><div class="lbl">Saved for users</div></div>
+    <div class="proof-stat"><div class="num" style="color:var(--blue)">48K+</div><div class="lbl">Emails handled</div></div>
+    <div class="proof-stat"><div class="num" style="color:var(--orange)">12K</div><div class="lbl">Hours reclaimed</div></div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section container" id="features">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Not a chatbot. An autopilot.</h2>
+    <p class="section-desc">Phantom doesn't wait for instructions. It learns how you think, write, and decide — then handles your digital life autonomously.</p>
+    <div class="features-grid">
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">📧</div>
+        <h3>Email Twin</h3>
+        <p>Reads, triages, and replies in your exact voice and tone. Indistinguishable from you. You approve the important ones.</p>
+        <span class="badge badge-green">Live</span>
+      </div>
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">💸</div>
+        <h3>Bill Negotiator</h3>
+        <p>Detects price hikes, calls providers, negotiates lower rates, cancels services you don't use. Saves $200-500/mo.</p>
+        <span class="badge badge-green">Live</span>
+      </div>
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">📅</div>
+        <h3>Life Scheduler</h3>
+        <p>Actually messages people, reschedules, books restaurants, and coordinates group plans. Not just a calendar.</p>
+        <span class="badge badge-green">Live</span>
+      </div>
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">🛡️</div>
+        <h3>Money Guardian</h3>
+        <p>Monitors transactions, disputes fraud, files warranty claims, finds refunds you didn't know you were owed.</p>
+        <span class="badge badge-orange">Beta</span>
+      </div>
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">🎯</div>
+        <h3>Opportunity Hunter</h3>
+        <p>Scans job boards, grants, contests, and deals. Applies to matches with personalized applications.</p>
+        <span class="badge badge-orange">Beta</span>
+      </div>
+      <div class="card card-glow feature-card" data-reveal>
+        <div class="feature-emoji">🧠</div>
+        <h3>Your Voice, Your Rules</h3>
+        <p>Fine-tuned on your writing style. Respects your boundaries. Escalates when uncertain. Gets smarter daily.</p>
+        <span class="badge badge-green">Live</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section container" id="how">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps. Then hands-off.</h2>
+    <p class="section-desc">Setup takes 10 minutes. After that, Phantom runs 24/7.</p>
+    <div class="steps">
+      <div class="step" data-reveal>
+        <div class="step-num">1</div>
+        <h3>Connect your accounts</h3>
+        <p>Link email, calendar, banking alerts. Encrypted end-to-end. We never see your data.</p>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num">2</div>
+        <h3>Teach it your style</h3>
+        <p>Phantom analyzes your past messages. Within hours, it writes like you. Set your rules and boundaries.</p>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num">3</div>
+        <h3>Let it run</h3>
+        <p>Wake up to a morning brief of everything handled overnight. Approve, adjust, or let it keep going.</p>
+      </div>
+    </div>
+
+    <div class="brief card" data-reveal>
+      <div class="brief-header">☀️ Good morning, Sarah — here's your overnight brief</div>
+      <div class="brief-body">
+        <div class="brief-row"><span class="icon">📧</span><div class="text">Handled <strong>14 emails</strong> — 2 need your eyes <a href="/signup.html" style="color:var(--accent)">→ Review</a></div></div>
+        <div class="brief-row"><span class="icon">💰</span><div class="text">Recovered <strong>$47.00</strong> from a double charge on your Visa</div></div>
+        <div class="brief-row"><span class="icon">📅</span><div class="text">Moved dentist to <strong>Thu 3pm</strong> (conflict with standup resolved)</div></div>
+        <div class="brief-row"><span class="icon">✈️</span><div class="text">Found Tokyo flights at <strong>$389</strong> (52% below alert) — held 24h</div></div>
+        <div class="brief-row"><span class="icon">📝</span><div class="text">Applied to <strong>3 freelance gigs</strong> matching your profile</div></div>
+        <div class="brief-total"><div class="lbl">Net savings this month</div><div class="val">+$482.30</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section container" id="pricing">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Phantom pays for itself</h2>
+    <p class="section-desc">The average Elite user saves $340/mo. That's 3.4× return before counting time saved.</p>
+    <div class="pricing-grid">
+      <div class="card price-card" data-reveal>
+        <div class="price-name">Starter</div>
+        <div class="price-amount">Free</div>
+        <div class="price-period">forever</div>
+        <ul class="price-features">
+          <li>Email triage & summaries</li>
+          <li>Calendar management</li>
+          <li>5 auto-replies per day</li>
+          <li>Morning brief</li>
+        </ul>
+        <a href="/signup.html" class="btn btn-secondary btn-full">Get Started</a>
+      </div>
+      <div class="card price-card featured" data-reveal>
+        <div class="price-name">Pro</div>
+        <div class="price-amount">$29</div>
+        <div class="price-period">per month</div>
+        <ul class="price-features">
+          <li>Everything in Starter</li>
+          <li>Unlimited auto-replies</li>
+          <li>Bill negotiation</li>
+          <li>10+ integrations</li>
+          <li>Voice-matched writing</li>
+        </ul>
+        <a href="/signup.html" class="btn btn-primary btn-full">Start Free Trial</a>
+      </div>
+      <div class="card price-card" data-reveal>
+        <div class="price-name">Elite</div>
+        <div class="price-amount">$99</div>
+        <div class="price-period">per month</div>
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>Financial optimization</li>
+          <li>Opportunity hunter</li>
+          <li>Warranty & refund claims</li>
+          <li>Priority support</li>
+          <li>Revenue share: keep 85%</li>
+        </ul>
+        <a href="/signup.html" class="btn btn-secondary btn-full">Start Free Trial</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="section-label">Early Access</div>
+      <h2 class="section-title">Stop doing the internet's homework</h2>
+      <p class="section-desc" style="margin:0 auto">Join 2,400+ people waiting for Phantom. Early users get Pro free for 3 months.</p>
+      <form class="waitlist-form" onsubmit="event.preventDefault(); const n = Phantom.joinWaitlist(this.email.value); if(n) { document.getElementById('wl-msg').innerHTML='<strong>You\'re in!</strong> Position #'+(2400+n)+'. We\'ll email you soon.'; this.email.value=''; }">
+        <input type="email" name="email" class="input input-lg" placeholder="Enter your email" required>
+        <button type="submit" class="btn btn-primary btn-lg">Join Waitlist</button>
+      </form>
+      <p class="waitlist-msg" id="wl-msg">No spam. Early access invites only.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <a href="/" class="site-logo">phantom <span>ai</span></a>
+    <p>Built for humans who have better things to do.</p>
+    <p style="margin-top:6px">© 2026 Phantom AI. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

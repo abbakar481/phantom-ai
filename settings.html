@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/phantom-ai/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Phantom</title>
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👻</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/global.css">
+  <style>
+    .settings-page {
+      max-width: 700px; margin: 0 auto;
+      padding: calc(var(--nav-height) + 40px) 24px 80px;
+    }
+    .settings-header { margin-bottom: 36px; }
+    .settings-header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+    .settings-header p { color: var(--text-dim); font-size: 0.92rem; }
+    .settings-section { margin-bottom: 36px; }
+    .settings-section-title {
+      font-size: 1rem; font-weight: 700; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid rgba(35,35,42,0.4);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-info { flex: 1; }
+    .settings-row-label { font-size: 0.92rem; font-weight: 600; margin-bottom: 2px; }
+    .settings-row-desc { font-size: 0.82rem; color: var(--text-dim); }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative; width: 44px; height: 24px;
+      flex-shrink: 0; cursor: pointer;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: var(--border); transition: all 0.3s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--text-muted); transition: all 0.3s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(20px); background: white;
+    }
+
+    /* Profile form */
+    .profile-form { display: flex; flex-direction: column; gap: 16px; }
+    .profile-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 700; color: white;
+      margin-bottom: 8px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* Plan card */
+    .plan-card {
+      padding: 20px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .plan-info .plan-name { font-size: 1rem; font-weight: 700; }
+    .plan-info .plan-desc { font-size: 0.85rem; color: var(--text-dim); margin-top: 2px; }
+
+    /* Connected accounts */
+    .connected-item {
+      display: flex; align-items: center; gap: 14px; padding: 14px 0;
+      border-bottom: 1px solid rgba(35,35,42,0.4);
+    }
+    .connected-item:last-child { border-bottom: none; }
+    .connected-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; background: var(--bg-input); border: 1px solid var(--border);
+    }
+    .connected-info { flex: 1; }
+    .connected-name { font-size: 0.92rem; font-weight: 600; }
+    .connected-status { font-size: 0.78rem; }
+
+    /* Danger zone */
+    .danger-zone {
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .danger-zone h3 { color: var(--red); font-size: 1rem; margin-bottom: 8px; }
+    .danger-zone p { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 16px; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .plan-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <a href="/" class="site-logo">phantom <span>ai</span></a>
+    <div class="nav-links">
+      <a href="/dashboard.html" class="btn btn-ghost btn-sm">← Dashboard</a>
+      <a href="#" class="btn btn-ghost btn-sm" onclick="Phantom.logout()">Log out</a>
+    </div>
+  </nav>
+
+  <div class="settings-page" id="settings-content">
+    <!-- Populated by JS -->
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Phantom.user;
+      if (!user) return;
+
+      const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      const planNames = { starter: 'Starter (Free)', pro: 'Pro ($29/mo)', elite: 'Elite ($99/mo)' };
+
+      document.getElementById('settings-content').innerHTML = `
+        <div class="settings-header">
+          <h1>Settings</h1>
+          <p>Manage your account, modules, and connected services.</p>
+        </div>
+
+        <!-- Profile -->
+        <div class="settings-section">
+          <h2 class="settings-section-title">Profile</h2>
+          <div class="profile-avatar">${initials}</div>
+          <form class="profile-form" onsubmit="event.preventDefault(); Phantom.updateProfile(this.fname.value+' '+this.lname.value, this.email.value);">
+            <div class="form-row">
+              <div class="input-group">
+                <label>First name</label>
+                <input class="input" name="fname" value="${user.name.split(' ')[0] || ''}" required>
+              </div>
+              <div class="input-group">
+                <label>Last name</label>
+                <input class="input" name="lname" value="${user.name.split(' ').slice(1).join(' ') || ''}">
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Email</label>
+              <input class="input" type="email" name="email" value="${user.email}" required>
+            </div>
+            <div class="input-group">
+              <label>Timezone</label>
+              <select class="input" onchange="Phantom.saveSetting('timezone', this.value)">
+                <option ${user.settings.timezone.includes('America/New_York') ? 'selected' : ''}>America/New_York</option>
+                <option ${user.settings.timezone.includes('America/Chicago') ? 'selected' : ''}>America/Chicago</option>
+                <option ${user.settings.timezone.includes('America/Denver') ? 'selected' : ''}>America/Denver</option>
+                <option ${user.settings.timezone.includes('America/Los_Angeles') ? 'selected' : ''}>America/Los_Angeles</option>
+                <option ${user.settings.timezone.includes('Europe/London') ? 'selected' : ''}>Europe/London</option>
+                <option ${user.settings.timezone.includes('Europe/Berlin') ? 'selected' : ''}>Europe/Berlin</option>
+                <option ${user.settings.timezone.includes('Asia/Tokyo') ? 'selected' : ''}>Asia/Tokyo</option>
+                <option ${user.settings.timezone.includes('UTC') ? 'selected' : ''}>UTC</option>
+              </select>
+            </div>
+            <div><button type="submit" class="btn btn-primary">Save Profile</button></div>
+          </form>
+        </div>
+
+        <!-- Plan -->
+        <div class="settings-section">
+          <h2 class="settings-section-title">Plan</h2>
+          <div class="card plan-card">
+            <div class="plan-info">
+              <div class="plan-name">${planNames[user.plan] || 'Starter (Free)'}</div>
+              <div class="plan-desc">Member since ${new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Phantom.toast('Upgrade flow coming soon','info')">
+              ${user.plan === 'elite' ? 'Manage Plan' : 'Upgrade'}
+            </button>
+          </div>
+        </div>
+
+        <!-- Modules -->
+        <div class="settings-section">
+          <h2 class="settings-section-title">Modules</h2>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label">📧 Email Twin</div>
+              <div class="settings-row-desc">Auto-reply to emails in your voice</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${user.settings.emailTwin ? 'checked' : ''} onchange="Phantom.saveSetting('emailTwin', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label">💸 Bill Negotiator</div>
+              <div class="settings-row-desc">Automatically negotiate bills and cancel unused subscriptions</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${user.settings.billNegotiator ? 'checked' : ''} onchange="Phantom.saveSetting('billNegotiator', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label">🎯 Opportunity Hunter</div>
+              <div class="settings-row-desc">Scan and apply to matching jobs, grants, and deals</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${user.settings.opportunityHunter ? 'checked' : ''} onchange="Phantom.saveSetting('opportunityHunter', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label">☀️ Morning Brief</div>
+              <div class="settings-row-desc">Daily summary of everything Phantom did overnight</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${user.settings.morningBrief ? 'checked' : ''} onchange="Phantom.saveSetting('morningBrief', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label">⚡ Auto-Approve</div>
+              <div class="settings-row-desc">Skip manual approval for low-risk actions (emails under $0 impact)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${user.settings.autoApprove ? 'checked' : ''} onchange="Phantom.saveSetting('autoApprove', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Connected Accounts -->
+        <div class="settings-section">
+          <h2 class="settings-section-title">Connected Accounts</h2>
+          <div class="connected-item">
+            <div class="connected-icon">📧</div>
+            <div class="connected-info">
+              <div class="connected-name">Gmail</div>
+              <div class="connected-status text-green">Connected</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="Phantom.toast('Disconnect coming soon','info')">Disconnect</button>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">📅</div>
+            <div class="connected-info">
+              <div class="connected-name">Google Calendar</div>
+              <div class="connected-status text-green">Connected</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="Phantom.toast('Disconnect coming soon','info')">Disconnect</button>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">🏦</div>
+            <div class="connected-info">
+              <div class="connected-name">Chase Banking</div>
+              <div class="connected-status" style="color:var(--text-dim)">Not connected</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="Phantom.toast('Plaid integration coming soon','info')">Connect</button>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">💼</div>
+            <div class="connected-info">
+              <div class="connected-name">LinkedIn</div>
+              <div class="connected-status" style="color:var(--text-dim)">Not connected</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="Phantom.toast('LinkedIn integration coming soon','info')">Connect</button>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-section">
+          <div class="danger-zone">
+            <h3>Danger Zone</h3>
+            <p>Permanently delete your account and all associated data. This cannot be undone.</p>
+            <button class="btn btn-danger btn-sm" onclick="if(confirm('Are you sure? This cannot be undone.')) { Phantom.logout(); }">Delete Account</button>
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
